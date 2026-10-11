@@ -22,10 +22,10 @@
 <body>
     <h1>Dodaj książkę</h1>
 
-    {{-- Zbiorcze komunikaty na górze --}}
+    {{-- Zbiorcze błędy walidacji --}}
     @if ($errors->any())
         <div class="alert-errors">
-            <strong>Proszę poprawić błędy w formularzu</strong>
+            <strong>Proszę poprawić błędy w formularzu:</strong>
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -37,83 +37,37 @@
     <form action="{{ route('books.store') }}" method="POST">
         @csrf
 
-        <!-- Tytuł książki -->
+        {{-- Pole: Tytuł książki --}}
         <div>
             <label for="title">Tytuł książki:</label><br>
-            <input type="text" id="title" name="title" value="{{ old('title') }}" placeholder="np. Limes inferior">
+            <input type="text" id="title" name="title" value="{{ old('title') }}" placeholder="np. Wiedźmin">
             @error('title')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
         <br>
 
-        <!-- Rok wydania -->
+        {{-- Pole: Autor --}}
         <div>
-            <label for="year">Rok wydania:</label><br>
-            <input type="number" id="year" name="year" value="{{ old('year') }}" placeholder="np. 1982">
-            @error('year')
+            <label for="author">Autor:</label><br>
+            <input type="text" id="author" name="author" value="{{ old('author') }}" placeholder="np. Andrzej Sapkowski">
+            @error('author')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
         <br>
 
-        <!-- Kategoria -->
+        {{-- Pole: Rok wydania --}}
         <div>
-            <label for="category">Kategoria:</label><br>
-            <select id="category" name="category">
-                <option value="Literatura piękna" {{ old('category') == 'Literatura piękna' ? 'selected' : '' }}>Literatura piękna</option>
-                <option value="Sci-Fi / Fantasy" {{ old('category') == 'Sci-Fi / Fantasy' ? 'selected' : '' }}>Sci-Fi / Fantasy</option>
-                <option value="Biografie" {{ old('category') == 'Biografie' ? 'selected' : '' }}>Biografie</option>
-                <option value="Naukowe" {{ old('category') == 'Naukowe' ? 'selected' : '' }}>Naukowe</option>
-            </select>
-            @error('category')
+            <label for="published_year">Rok wydania:</label><br>
+            <input type="number" id="published_year" name="published_year" value="{{ old('published_year') }}" placeholder="np. 1993">
+            @error('published_year')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
         <br>
 
-        <!-- Opis książki -->
-        <div>
-            <label for="description">Opis książki:</label><br>
-            <textarea id="description" name="description" rows="4" cols="40" placeholder="Krótki opis fabuły...">{{ old('description') }}</textarea>
-            @error('description')
-                <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-        <br>
-
-        <!-- Dostępność w bibliotece -->
-        <div>
-            <label>
-                <input type="checkbox" name="is_available" value="1" {{ old('is_available') ? 'checked' : '' }}>
-                Dostępna w bibliotece
-            </label>
-        </div>
-        <br>
-
-        <!-- Numer półki (wymagany, jeśli zaznaczono dostępność) -->
-        <div>
-            <label for="shelf">Numer półki:</label><br>
-            <input type="text" id="shelf" name="shelf" value="{{ old('shelf') }}" placeholder="np. Półka A-12">
-            @error('shelf')
-                <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-        <br>
-
-        <!-- Tagi / Słowa kluczowe (3 osobne pola) -->
-        <div>
-            <label>Tagi / Słowa kluczowe:</label><br>
-            <input type="text" name="tags[]" value="{{ old('tags.0') }}" placeholder="Tag 1"><br>
-            <input type="text" name="tags[]" value="{{ old('tags.1') }}" placeholder="Tag 2" style="margin-top: 5px;"><br>
-            <input type="text" name="tags[]" value="{{ old('tags.2') }}" placeholder="Tag 3" style="margin-top: 5px;"><br>
-            @error('tags.*')
-                <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-        <br>
-
-        <button type="submit">Zapisz książkę</button>
+        <button type="submit">Dodaj książkę</button>
     </form>
 </body>
 </html>

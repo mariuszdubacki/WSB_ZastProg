@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreBookRequest;
+use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
@@ -12,13 +13,30 @@ class BookController extends Controller
         return view('books.create');
     }
 
-    public function store(StoreBookRequest $request)
-{
-    // Walidacja wykonuje się automatycznie przed wejściem do tej metody
-    $validated = $request->validated();
+    public function store(Request $request)
+    {
+        // 1. Walidacja danych z obiektu żądania
+        $validated = $request->validate([
+            'title'          => 'required|string|max:200',
+            'author'         => 'required|string|max:160',
+            'published_year' => 'nullable|integer|between:0,65535',
+        ]);
 
-    return redirect()->route('books.index')->with('status', 'Formularz przeszedł walidację i został odebrany!');
-}
+        // 2. Bezpieczny zapis za pomocą surowego SQL (DB::insert) z bindowaniem parametrów
+        DB::insert(
+            'INSERT INTO books (title, author, published_year, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
+            [
+                $validated['title'],
+                $validated['author'],
+                $validated['published_year'] ?? null,
+                now(),
+                now(),
+            ]
+        );
+
+        // 3. Przekierowanie na adres /books (trasa books.index) z komunikatem sukcesu
+        return redirect()->route('books.index')->with('status', 'Książka została pomyślnie zapisana w bazie danych!');
+    }
 
     public function index()
     {
