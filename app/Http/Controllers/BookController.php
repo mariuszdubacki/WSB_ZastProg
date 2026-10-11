@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreBookRequest;
 
 class BookController extends Controller
 {
@@ -11,27 +12,13 @@ class BookController extends Controller
         return view('books.create');
     }
 
-    public function store(Request $request)
-    {
-        // 1. Pobranie pojedynczej wartości dla pola title
-        $title = $request->input('title');
+    public function store(StoreBookRequest $request)
+{
+    // Walidacja wykonuje się automatycznie przed wejściem do tej metody
+    $validated = $request->validated();
 
-        // 2. Pobranie pełnej tablicy wszystkich przesłanych pól
-        $allData = $request->all();
-
-        // 3. Pobranie wyłącznie podzbioru pól obejmującego title oraz category
-        $subset = $request->only(['title', 'category']);
-
-        // Wyświetlenie wszystkich 3 wariantów na ekranie (do weryfikacji zadania):
-        dd([
-            'single_title' => $title,
-            'all_data'     => $allData,
-            'subset_only'  => $subset,
-        ]);
-
-        // Standardowe przekierowanie (gdy nie używamy dd):
-        // return redirect()->route('books.index')->with('status', 'Formularz został odebrany!');
-    }
+    return redirect()->route('books.index')->with('status', 'Formularz przeszedł walidację i został odebrany!');
+}
 
     public function index()
     {
@@ -43,11 +30,11 @@ class BookController extends Controller
     {
         // Przykładowy obiekt/tablica książki do wypełnienia formularza
         $book = (object) [
-            'id' => $id,
-            'title' => 'Limes inferior',
-            'year' => 1982,
-            'category' => 'Sci-Fi / Fantasy',
-            'description' => 'Klasyka polskiej fantastyki socjologicznej.',
+            'id'           => $id,
+            'title'        => 'Limes inferior',
+            'year'         => 1982,
+            'category'     => 'Sci-Fi / Fantasy',
+            'description'  => 'Klasyka polskiej fantastyki socjologicznej.',
             'is_available' => true,
         ];
 
